@@ -19,3 +19,8 @@ Sample_mcu$hour = format(as.POSIXct(Sample_mcu$timestamp, format = "%d-%m-%Y %H:
 #Extract date and hour from timestamp for NCL data
 Sample_ncl$date = as.Date(Sample_ncl$Timestamp, format = "%Y-%m-%d")
 Sample_ncl$hour = format(as.POSIXct(Sample_ncl$Timestamp, format = "%Y-%m-%d %H:%M"),  "%H")
+
+#Aggregate the NCL data based on Variable, location, date and hours
+sample_ncl_data = Sample_ncl %>% group_by(Sample_ncl$Variable, Sample_ncl$Location..WKT., Sample_ncl$date, Sample_ncl$hour) %>%
+  summarise(Value = mean(Value))
+
