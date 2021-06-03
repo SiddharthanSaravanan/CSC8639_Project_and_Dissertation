@@ -20,6 +20,16 @@ Sample_mcu$hour = format(as.POSIXct(Sample_mcu$timestamp, format = "%d-%m-%Y %H:
 Sample_ncl$date = as.Date(Sample_ncl$Timestamp, format = "%Y-%m-%d")
 Sample_ncl$hour = format(as.POSIXct(Sample_ncl$Timestamp, format = "%Y-%m-%d %H:%M"),  "%H")
 
+# Drop NA values in both MCU and NCL data and aggregate:
+#NCL data
+Sample_ncl = Sample_ncl %>% drop_na()
+
+
+#MCU data
+Sample_mcu = Sample_mcu %>% drop_na()
+
+
+
 #Aggregate the NCL data based on Variable, location, date and hours
 sample_ncl_data = Sample_ncl %>% group_by(Variable, Location..WKT., date, hour) %>% summarise(Value = mean(Value))
 
@@ -31,3 +41,18 @@ sample_mcu_data = pivot_mcu_data %>% group_by(Variable, PostCodes, date, hour) %
                                                                                              Value = mean(Value))
 
 
+#Aggregation based on Variable, location and date on Both MCU and NCL data:
+
+#NCL data
+agg_date_sample_ncl_data = Sample_ncl %>% group_by(Variable, date) %>% summarise(Value = mean(Value))
+
+agg_date_sample_ncl_data$City = "NCL"
+
+#MCU data
+agg_date_sample_mcu_data = pivot_mcu_data %>% group_by(Variable, date) %>% summarise(Value = mean(Value))
+
+agg_date_sample_mcu_data$City = "MCU"
+
+#Combine the dataframes:
+
+sample_data = rbind(agg_date_sample_ncl_data, agg_date_sample_mcu_data)
