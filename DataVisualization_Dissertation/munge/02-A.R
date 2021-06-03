@@ -21,6 +21,13 @@ Sample_ncl$date = as.Date(Sample_ncl$Timestamp, format = "%Y-%m-%d")
 Sample_ncl$hour = format(as.POSIXct(Sample_ncl$Timestamp, format = "%Y-%m-%d %H:%M"),  "%H")
 
 #Aggregate the NCL data based on Variable, location, date and hours
-sample_ncl_data = Sample_ncl %>% group_by(Sample_ncl$Variable, Sample_ncl$Location..WKT., Sample_ncl$date, Sample_ncl$hour) %>%
-  summarise(Value = mean(Value))
+sample_ncl_data = Sample_ncl %>% group_by(Variable, Location..WKT., date, hour) %>% summarise(Value = mean(Value))
+
+#Use pivot longer to convert the column into rows in MCU data
+pivot_mcu_data = Sample_mcu %>% pivot_longer(cols = -c(timestamp, StationName, PostCodes, date, hour) , names_to = "Variable", values_to = "Value")
+
+#Aggregate the MCU data based on Variable, location, date and hours
+sample_mcu_data = pivot_mcu_data %>% group_by(Variable, PostCodes, date, hour) %>% summarise(StationName = StationName, 
+                                                                                             Value = mean(Value))
+
 
