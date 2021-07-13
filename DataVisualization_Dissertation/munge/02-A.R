@@ -7,52 +7,44 @@ names(MCU_data)[8] = "O3"
 names(MCU_data)[9] = "SO2"
 
 #Sample comparision
-Sample_mcu = MCU_data[,c("timestamp", "NO2", "PM10", "StationName", "PostCodes")]
+mcu_org_data = MCU_data[,c("timestamp", "NO2", "PM10", "StationName", "PostCodes")]
 
-Sample_ncl = ncl_data %>% filter(Variable == c("NO2","PM10"))
+ncl_org_data = ncl_data %>% filter(Variable == c("NO2","PM10"))
 
 #Extract date and hour from timestamp for MCU data
-#Sample_mcu$date = as.POSIXct(Sample_mcu$timestamp, format = "%d-%m-%Y")
-Sample_mcu$date = as.Date(Sample_mcu$timestamp, format = "%d-%m-%Y")
-Sample_mcu$hour = format(as.POSIXct(Sample_mcu$timestamp, format = "%d-%m-%Y %H:%M"),  "%H")
+#mcu_org_data$date = as.POSIXct(mcu_org_data$timestamp, format = "%d-%m-%Y")
+mcu_org_data$date = as.Date(mcu_org_data$timestamp, format = "%d-%m-%Y")
+mcu_org_data$hour = format(as.POSIXct(mcu_org_data$timestamp, format = "%d-%m-%Y %H:%M"),  "%H")
 
 #Extract date and hour from timestamp for NCL data
-Sample_ncl$date = as.Date(Sample_ncl$Timestamp, format = "%Y-%m-%d")
-Sample_ncl$hour = format(as.POSIXct(Sample_ncl$Timestamp, format = "%Y-%m-%d %H:%M"),  "%H")
+ncl_org_data$date = as.Date(ncl_org_data$Timestamp, format = "%Y-%m-%d")
+ncl_org_data$hour = format(as.POSIXct(ncl_org_data$Timestamp, format = "%Y-%m-%d %H:%M"),  "%H")
 
 # Drop NA values in both MCU and NCL data and aggregate:
 #NCL data
-Sample_ncl = Sample_ncl %>% drop_na()
+ncl_org_data = ncl_org_data %>% drop_na()
 
 
 #MCU data
-Sample_mcu = Sample_mcu %>% drop_na()
+mcu_org_data = mcu_org_data %>% drop_na()
 
+#-----------------------------------------------------------------------------------------------------------
 
+#Aggregation for location based info
 
 #Aggregate the NCL data based on Variable, location, date and hours
-sample_ncl_data = Sample_ncl %>% group_by(Variable, Location..WKT., date, hour) %>% summarise(Value = mean(Value))
+ncl_agg_1 = ncl_org_data %>% group_by(Variable, Location..WKT., date, hour) %>% summarise(Value = mean(Value))
 
 #Use pivot longer to convert the column into rows in MCU data
-pivot_mcu_data = Sample_mcu %>% pivot_longer(cols = -c(timestamp, StationName, PostCodes, date, hour) , names_to = "Variable", values_to = "Value")
+pivot_mcu_data = mcu_org_data %>% pivot_longer(cols = -c(timestamp, StationName, PostCodes, date, hour) , names_to = "Variable", values_to = "Value")
 
 #Aggregate the MCU data based on Variable, location, date and hours
-sample_mcu_data = pivot_mcu_data %>% group_by(Variable, PostCodes, date, hour) %>% summarise(StationName = StationName, 
+mcu_agg_1 = pivot_mcu_data %>% group_by(Variable, PostCodes, date, hour) %>% summarise(StationName = StationName,
                                                                                              Value = mean(Value))
 
 
-#Aggregation based on Variable, location and date on Both MCU and NCL data:
+write.csv(ncl_agg_1, file = 'data/ncl_agg_1.csv', row.names = FALSE)
+write.csv(mcu_agg_1, file = 'data/mcu_agg_1.csv', row.names = FALSE)
 
-#NCL data
-agg_date_sample_ncl_data = Sample_ncl %>% group_by(Variable, date) %>% summarise(Value = mean(Value))
+#-------------------------------------------------------------------------------------------------------------------
 
-agg_date_sample_ncl_data$City = "NCL"
-
-#MCU data
-agg_date_sample_mcu_data = pivot_mcu_data %>% group_by(Variable, date) %>% summarise(Value = mean(Value))
-
-agg_date_sample_mcu_data$City = "MCU"
-
-#Combine the dataframes:
-
-sample_data = rbind(agg_date_sample_ncl_data, agg_date_sample_mcu_data)
