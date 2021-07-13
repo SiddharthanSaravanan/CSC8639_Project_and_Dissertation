@@ -28,23 +28,27 @@ ncl_org_data = ncl_org_data %>% drop_na()
 #MCU data
 mcu_org_data = mcu_org_data %>% drop_na()
 
-#-----------------------------------------------------------------------------------------------------------
-
-#Aggregation for location based info
-
-#Aggregate the NCL data based on Variable, location, date and hours
-ncl_agg_1 = ncl_org_data %>% group_by(Variable, Location..WKT., date, hour) %>% summarise(Value = mean(Value))
-
 #Use pivot longer to convert the column into rows in MCU data
 pivot_mcu_data = mcu_org_data %>% pivot_longer(cols = -c(timestamp, StationName, PostCodes, date, hour) , names_to = "Variable", values_to = "Value")
 
-#Aggregate the MCU data based on Variable, location, date and hours
-mcu_agg_1 = pivot_mcu_data %>% group_by(Variable, PostCodes, date, hour) %>% summarise(StationName = StationName,
-                                                                                             Value = mean(Value))
 
-
-write.csv(ncl_agg_1, file = 'data/ncl_agg_1.csv', row.names = FALSE)
-write.csv(mcu_agg_1, file = 'data/mcu_agg_1.csv', row.names = FALSE)
+#-----------------------------------------------------------------------------------------------------------
+# 
+# #Aggregation for location based info
+# 
+# #Aggregate the NCL data based on Variable, location, date and hours
+# ncl_agg_1 = ncl_org_data %>% group_by(Variable, Location..WKT., date, hour) %>% summarise(Value = mean(Value))
+# 
+# #Use pivot longer to convert the column into rows in MCU data
+# pivot_mcu_data = mcu_org_data %>% pivot_longer(cols = -c(timestamp, StationName, PostCodes, date, hour) , names_to = "Variable", values_to = "Value")
+# 
+# #Aggregate the MCU data based on Variable, location, date and hours
+# mcu_agg_1 = pivot_mcu_data %>% group_by(Variable, PostCodes, date, hour) %>% summarise(StationName = StationName,
+#                                                                                              Value = mean(Value))
+# 
+# 
+# write.csv(ncl_agg_1, file = 'data/ncl_agg_1.csv', row.names = FALSE)
+# write.csv(mcu_agg_1, file = 'data/mcu_agg_1.csv', row.names = FALSE)
 
 #-------------------------------------------------------------------------------------------------------------------
 
