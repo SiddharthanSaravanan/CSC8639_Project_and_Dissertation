@@ -8,11 +8,11 @@ mcu_final_lat_lon_pm10 = mcu_final_lat_lon %>% filter(Variable == 'PM10')
 
 
 #drop the columns:
-ncl_final_lat_lon_no2 = ncl_final_lat_lon_no2[,c(3,2,4,8)]
-ncl_final_lat_lon_pm10 = ncl_final_lat_lon_pm10[,c(3,2,4,8)]
+ncl_final_lat_lon_no2 = ncl_final_lat_lon_no2[,c(3,2,4,10)]
+ncl_final_lat_lon_pm10 = ncl_final_lat_lon_pm10[,c(3,2,4,10)]
 
-mcu_final_lat_lon_no2 = mcu_final_lat_lon_no2[,c(1,6,7,8)]
-mcu_final_lat_lon_pm10 = mcu_final_lat_lon_pm10[,c(1,6,7,8)]
+mcu_final_lat_lon_no2 = mcu_final_lat_lon_no2[,c(1,6,7,10)]
+mcu_final_lat_lon_pm10 = mcu_final_lat_lon_pm10[,c(1,6,7,10)]
 
 names(mcu_final_lat_lon_no2)[1] = "Timestamp"
 names(mcu_final_lat_lon_pm10)[1] = "Timestamp"
