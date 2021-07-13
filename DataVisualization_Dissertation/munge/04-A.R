@@ -1,34 +1,36 @@
-#conversion of postcodes into lat and long
+#Splitting the datasets into NO2 and PM10
 
-#Mcu data---------
+ncl_final_lat_lon_no2 = ncl_final_lat_lon %>% filter(Variable == 'NO2')
+ncl_final_lat_lon_pm10 = ncl_final_lat_lon %>% filter(Variable == 'PM10')
 
-mcu_lat_lon_data = as.data.frame(unique(pivot_mcu_data$PostCodes))
-names(mcu_lat_lon_data)[1] = "PostCodes"
-
-mcu_lat_lon_data = cbind(mcu_lat_lon_data, geocode(mcu_lat_lon_data$PostCodes, output = "latlon"))
-
-names(mcu_lat_lon_data)[2] = "Longitude"
-names(mcu_lat_lon_data)[3] = "Latitude"
-
-mcu_lat_lon_data$Longitude = as.character(mcu_lat_lon_data$Longitude)
-mcu_lat_lon_data$Latitude = as.character(mcu_lat_lon_data$Latitude)
-
-mcu_final_lat_lon = join(pivot_mcu_data, mcu_lat_lon_data, type = "left")
-mcu_final_lat_lon$City = "MCU"
-
-#NCL data
+mcu_final_lat_lon_no2 = mcu_final_lat_lon %>% filter(Variable == 'NO2')
+mcu_final_lat_lon_pm10 = mcu_final_lat_lon %>% filter(Variable == 'PM10')
 
 
-ncl_final_lat_lon = cbind(ncl_org_data, read.table(text = ncl_org_data$Location..WKT., sep = "("))
-ncl_final_lat_lon$V2 = as.character(ncl_final_lat_lon$V2)
-ncl_final_lat_lon = cbind(ncl_final_lat_lon, read.table(text = as.character(ncl_final_lat_lon$V2), sep = ")"))
-ncl_final_lat_lon = ncl_final_lat_lon[,-c(8,9,11)]
-ncl_final_lat_lon$V1 = as.character(ncl_final_lat_lon$V1)
+#drop the columns:
+ncl_final_lat_lon_no2 = ncl_final_lat_lon_no2[,c(3,2,4,8)]
+ncl_final_lat_lon_pm10 = ncl_final_lat_lon_pm10[,c(3,2,4,8)]
 
-ncl_final_lat_lon = cbind(ncl_final_lat_lon, read.table(text = as.character(ncl_final_lat_lon$V1), sep = ""))
-ncl_final_lat_lon = ncl_final_lat_lon[,-c(8)]
+mcu_final_lat_lon_no2 = mcu_final_lat_lon_no2[,c(1,6,7,8)]
+mcu_final_lat_lon_pm10 = mcu_final_lat_lon_pm10[,c(1,6,7,8)]
 
-names(ncl_final_lat_lon)[8] = "Longitude"
-names(ncl_final_lat_lon)[9] = "Latitude"
+names(mcu_final_lat_lon_no2)[1] = "Timestamp"
+names(mcu_final_lat_lon_pm10)[1] = "Timestamp"
 
-ncl_final_lat_lon$City = "NCL"
+#timestamp conversion:
+
+ncl_final_lat_lon_no2$datetime = as.POSIXct(ncl_final_lat_lon_no2$Timestamp, format = "%Y-%m-%d %H:%M:%S")
+ncl_final_lat_lon_pm10$datetime = as.POSIXct(ncl_final_lat_lon_pm10$Timestamp, format = "%Y-%m-%d %H:%M:%S")
+
+mcu_final_lat_lon_no2$datetime = as.POSIXct(mcu_final_lat_lon_no2$Timestamp, format = "%d-%m-%Y %H:%M")
+mcu_final_lat_lon_pm10$datetime = as.POSIXct(mcu_final_lat_lon_pm10$Timestamp, format = "%d-%m-%Y %H:%M")
+
+#Join both no2 and pm10 dataframe of mcu and ncl:
+ncl_mcu_no2 = rbind(ncl_final_lat_lon_no2, mcu_final_lat_lon_no2)
+ncl_mcu_pm10 = rbind(ncl_final_lat_lon_pm10, mcu_final_lat_lon_pm10)
+
+ncl_mcu_no2 = ncl_mcu_no2[order(ncl_mcu_no2$Variable, ncl_mcu_no2$datetime),]
+ncl_mcu_pm10 = ncl_mcu_pm10[order(ncl_mcu_pm10$Variable, ncl_mcu_pm10$datetime),]
+
+write.csv(ncl_mcu_no2, file = 'data/ncl_mcu_no2.csv', row.names = FALSE)
+write.csv(ncl_mcu_pm10, file = 'data/ncl_mcu_pm10.csv', row.names = FALSE)
