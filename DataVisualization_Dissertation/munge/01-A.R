@@ -1,11 +1,11 @@
 #Manchester data pre-processing step:
 
 #Sample comparision
-mcu_org_data = MCU_data[,c("timestamp", "NO2", "PM10", "StationName", "PostCodes")]
+mcu_org_data = MCU_data[,c("timestamp", "NO2", "PM10", "PostCodes")]
 
 #mcu_org_data$PostCodes[mcu_org_data$PostCodes=="M1"]="M1, piccadilly gardens"
 
-#ncl_org_data = ncl_data %>% filter(Variable == c("NO2","PM10"))
+ncl_org_data = ncl_data
 
 #Extract date and hour from timestamp for MCU data
 #mcu_org_data$date = as.POSIXct(mcu_org_data$timestamp, format = "%d-%m-%Y")
