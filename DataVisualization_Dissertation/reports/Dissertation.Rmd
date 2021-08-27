@@ -1,6 +1,5 @@
 ---
-title: Comparison of Air Quality between cities and predicting the Air Quality using
-  Machine Learning algorithms
+title: Comparison of Air Quality between two cities and Predicting the Air Quality concentration using Time Series Predictive Analysis
 author:
   - Siddharthan Saravanan^[C0020581]
 date: "04/08/2021"
@@ -119,6 +118,10 @@ The **Figure 6** represents the visualization generated based on Weekly granular
 The statistical analysis has been performed over the two cities datasets to statistically understand the Air Quality difference between the cities over the EV's. Hypothesis testing has been introduced for performing the statistical analysis which compares the quality between the cities.
 
 #### 3.1.3.1 Welch T-Test
+
+The Welch T-Test was performed between the two EV's - NO_2 and PM_10. The dataset obtained from step 3.1.2 has been used from which the dataset has been filtered and stored separately for each cities. The values of NO_2 and PM_10 of each cities are stored separately in an array from which Welch T-Test was performed. 
+
+## 3.2 Predictive Analysis
 
 
 
