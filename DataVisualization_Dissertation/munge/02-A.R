@@ -1,50 +1,34 @@
-#Manchester data pre-processing step:
-
-#Sample comparision
-mcu_org_data = MCU_data[,c("timestamp", "NO2", "PM10", "StationName", "PostCodes")]
-
-#mcu_org_data$PostCodes[mcu_org_data$PostCodes=="M1"]="M1, piccadilly gardens"
-
-#ncl_org_data = ncl_data %>% filter(Variable == c("NO2","PM10"))
-
-#Extract date and hour from timestamp for MCU data
-#mcu_org_data$date = as.POSIXct(mcu_org_data$timestamp, format = "%d-%m-%Y")
-mcu_org_data$date = as.Date(mcu_org_data$timestamp, format = "%d-%m-%Y")
-mcu_org_data$hour = format(as.POSIXct(mcu_org_data$timestamp, format = "%d-%m-%Y %H:%M"),  "%H")
-
-#Extract date and hour from timestamp for NCL data
-ncl_org_data$date = as.Date(ncl_org_data$Timestamp, format = "%Y-%m-%d")
-ncl_org_data$hour = format(as.POSIXct(ncl_org_data$Timestamp, format = "%Y-%m-%d %H:%M"),  "%H")
-
-# Drop NA values in both MCU and NCL data and aggregate:
-#NCL data
-ncl_org_data = ncl_org_data %>% drop_na()
-
-
-#MCU data
-mcu_org_data = mcu_org_data %>% drop_na()
-
-#Use pivot longer to convert the column into rows in MCU data
-pivot_mcu_data = mcu_org_data %>% pivot_longer(cols = -c(timestamp, PostCodes, date, hour) , names_to = "Variable", values_to = "Value")
-
-
-#-----------------------------------------------------------------------------------------------------------
+# #conversion of postcodes into lat and long
 # 
-# #Aggregation for location based info
+# #Mcu data---------
 # 
-# #Aggregate the NCL data based on Variable, location, date and hours
-# ncl_agg_1 = ncl_org_data %>% group_by(Variable, Location..WKT., date, hour) %>% summarise(Value = mean(Value))
+# mcu_lat_lon_data = as.data.frame(unique(pivot_mcu_data$PostCodes))
+# names(mcu_lat_lon_data)[1] = "PostCodes"
 # 
-# #Use pivot longer to convert the column into rows in MCU data
-# pivot_mcu_data = mcu_org_data %>% pivot_longer(cols = -c(timestamp, StationName, PostCodes, date, hour) , names_to = "Variable", values_to = "Value")
+# mcu_lat_lon_data = cbind(mcu_lat_lon_data, geocode(mcu_lat_lon_data$PostCodes, output = "latlon"))
 # 
-# #Aggregate the MCU data based on Variable, location, date and hours
-# mcu_agg_1 = pivot_mcu_data %>% group_by(Variable, PostCodes, date, hour) %>% summarise(StationName = StationName,
-#                                                                                              Value = mean(Value))
+# names(mcu_lat_lon_data)[2] = "Longitude"
+# names(mcu_lat_lon_data)[3] = "Latitude"
+# 
+# mcu_lat_lon_data$Longitude = as.character(mcu_lat_lon_data$Longitude)
+# mcu_lat_lon_data$Latitude = as.character(mcu_lat_lon_data$Latitude)
+# 
+# mcu_final_lat_lon = join(pivot_mcu_data, mcu_lat_lon_data, type = "left")
+# mcu_final_lat_lon$City = "MCU"
+# 
+# #NCL data
 # 
 # 
-# write.csv(ncl_agg_1, file = 'data/ncl_agg_1.csv', row.names = FALSE)
-# write.csv(mcu_agg_1, file = 'data/mcu_agg_1.csv', row.names = FALSE)
-
-#-------------------------------------------------------------------------------------------------------------------
-
+# ncl_final_lat_lon = cbind(ncl_org_data, read.table(text = ncl_org_data$Location..WKT., sep = "("))
+# ncl_final_lat_lon$V2 = as.character(ncl_final_lat_lon$V2)
+# ncl_final_lat_lon = cbind(ncl_final_lat_lon, read.table(text = as.character(ncl_final_lat_lon$V2), sep = ")"))
+# ncl_final_lat_lon = ncl_final_lat_lon[,-c(8,9,11)]
+# ncl_final_lat_lon$V1 = as.character(ncl_final_lat_lon$V1)
+# 
+# ncl_final_lat_lon = cbind(ncl_final_lat_lon, read.table(text = as.character(ncl_final_lat_lon$V1), sep = ""))
+# ncl_final_lat_lon = ncl_final_lat_lon[,-c(8)]
+# 
+# names(ncl_final_lat_lon)[8] = "Longitude"
+# names(ncl_final_lat_lon)[9] = "Latitude"
+# 
+# ncl_final_lat_lon$City = "NCL"

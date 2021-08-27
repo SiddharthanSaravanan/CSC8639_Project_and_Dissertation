@@ -1,11 +1,25 @@
-# #Aggregate the NCL data based on Variable, location, date and hours
-# ncl_agg_geo = ncl_final_lat_lon %>% group_by(Variable, Longitude, Latitude, date, hour, City) %>% summarise(Value = mean(Value))
+# #Welch t test
+# a = ncl_mcu_geo %>% pivot_wider(names_from = "Variable", values_from = "Value")
 # 
-# #Geospatial informations-----
-# ncl_geo = ncl_agg_geo[,c(1,4,5,3,2,7,6)]
+# a_mcu = a %>% filter(a$City=="MCU")
+# a_ncl = a %>% filter(a$City=="NCL")
 # 
-# mcu_geo = mcu_final_lat_lon[,c(6,4,5,9,8,7,10)]
+# a_no2_mcu = a_mcu$NO2
+# a_pm10_mcu = a_mcu$PM10
 # 
-# ncl_mcu_geo = rbind(mcu_geo, ncl_geo)
+# a_no2_ncl = a_ncl$NO2
+# a_pm10_ncl = a_ncl$PM10
 # 
-# write.csv(ncl_mcu_geo, file = 'data/ncl_mcu_geo.csv', row.names = FALSE)
+# boxplot(a_no2_mcu, a_no2_ncl, names=c("NO2_MCU","NO2_NCL"))
+# 
+# t.test(a_no2_mcu, a_no2_ncl, alternative = "greater")
+# 
+# mean(a_no2_ncl)
+# mean(a_no2_mcu)
+# 
+# hist(a_no2_mcu)
+# hist(a_no2_ncl)
+# 
+# t.test(a_pm10_mcu, a_pm10_ncl, alternative = "greater")
+# 
+# wilcox.test(a_no2_mcu, a_no2_ncl)
