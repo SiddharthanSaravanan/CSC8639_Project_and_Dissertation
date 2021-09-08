@@ -10,16 +10,14 @@ output:
 
 
 
-\pagenumbering{gobble}
+\pagenumbering{arabic}
 
 \begingroup
 \centering
 # Abstract {-}
 \endgroup
-\pagenumbering{arabic}
 
-\newpage
-
+The purpose of this study is to compare, visualize, and forecast air quality in Manchester and Newcastle upon Tyne using data from their respective Urban Observatories. This research considers only suspended particulate matter $PM_{10}$ and nitrogen dioxide $NO_2$, in accordance with the UK's Department of the Environment's Essential Variables (EVs). Using R and Tableau, data is mined, wrangled, and graphically examined. Comparing data collected between July 2019 and July 2020 visually and statistically reveals that PM10 concentrations are greater in Manchester City, whereas NO2 concentrations are higher in Newcastle upon Tyne. While Newcastle upon Tyne has lower PM10 concentrations, the presence of numerous outlier values indicates that significant fluctuations have occurred, perhaps owing to external sources. No patterns are discernible from a geospatial visual assessment of the concentrations based on the placements of sensors in both cities. The time series prediction of concentrations by the FB Prophet model reveals the presence of trend and seasonality patterns; the model predicts values with errors, often between 10% and 20% of MAPE. The workflow of this study can be utilized to discover new methods and findings for different Air Quality Index variables and for different cities.
 
 # Introduction
 
@@ -60,7 +58,7 @@ In the study [46], the objective is to evaluate the Time Series forecasting mode
 
 Another study involves in the time series forecasting analysis by using SARIMA and FB-Prophet model [54]. Two techniques to pollution forecasting have been offered in this article, both of which are based on historical data spanning the years 2005 to 2015. The proposed model forecasted 2016 pollution values. We conducted a comparison of the model's performance indicators. Both the SARIMA and prophet models have a high level of accuracy. However, the optimal strategy is the prophet model with log transformation because it has the lowest RMSE and MSE values. The findings demonstrate the viability of employing time series forecasting models, specifically the Prophet model, to estimate future pollution levels and develop an early warning system for public safety.
 
-## About AQI
+## About Air Quality Index
 
 The AURN [3] is the largest automatic monitoring network in the United Kingdom and is the primary network for reporting compliance with the Ambient Air Quality Directives. It consists of automated air quality monitoring stations that measure nitrogen oxides (NOx), sulphur dioxide (SO2), ozone (O3), carbon monoxide (CO), and particulate matter (PM) (PM10, PM2.5). These sites deliver high-resolution hourly information to the public via a variety of electronic, media, and web platforms.
 
@@ -155,15 +153,18 @@ The dashboards are created using Tableau and are broken down into multiple level
 ![Dashboard Visualisation of $NO_2$](NO2_Dashboard.png){ width=95%, height=250 }
 
 The **Figure 1** depicts the dashboard that was developed for the $NO_2$ concentration over time.
+\newpage
 
 ![Dashboard Visualisation of $PM_{10}$](PM10_Dashboard.png){ width=95%, height=250 }
 
 Displayed in **Figure 2** is the dashboard that was developed for the $PM_{10}$ concentration over time.
-\newpage
+
+The distributions across the cities at each concentrations where generated, which improves the findings for the reason behind the fluctutaions of the concentration values over the course of each month's calender day.
 
 ![Boxplot of Daily distributions of $NO_2$ by Months](Boxplot_NO2.png){ width=95%, height=250 }
 
 The **Figure 3** depicts the daily distribution of the $NO_2$ concentration by Months in the two cities, as represented by a boxplot. The specifics reflect the total value over the course of each month's calendar day.
+\newpage
 
 ![Boxplot of Daily distributions of $PM_{10}$ by Months](Boxplot_PM10.png){ width=95%, height=250 }
 
@@ -172,11 +173,11 @@ The **Figure 4** depicts the daily distribution of the $PM_{10}$ concentration b
 **Geospatial Representation:**
 
 Geospatial visualizations are created with location-based variables by utilising MapBox - OpenStreetMaps visualization with Tableau and the OpenStreetMaps visualization. Dashboards are built for the $NO_2$ and $PM_{10}$ concentrations of both cities, with one dashboard generated for each of the two concentrations. Each dot on the map symbolizes the position of a sensor or station, and the color scheme is chosen in such a way that it represents the concentration of very poor to very good Air Quality on a weekly basis, respectively.
-\newpage
 
 ![Dashboard Geospatial Visualisation of $NO_2$](NO_2_Geospatial_Dashboard.png){ width=95%, height=250 }
 
-The geospatial representation of $NO_2$ concentration is depicted in **Figure 5** based on the position of the sensor. 
+The geospatial representation of $NO_2$ concentration is depicted in **Figure 5** based on the position of the sensor.
+\newpage
 
 ![Dashboard Geospatial Visualisation of $PM_{10}$](PM_10_Geospatial_Dashboard.png){ width=95%, height=250 }
 
@@ -201,6 +202,7 @@ On the basis of the information received from the Welch T-Test, the **Table 3** 
 **Predictive Analysis - FB Prophet model:**
 
 In order to train the FB-Prophet model, data from July $1^{st}$, 2019 to November $30^{th}$, 2019 was used, and the data was projected for a 30-day period (December $1^{st}$, 2019 - December $31^{st}$, 2019). In accordance with the predictions, three graphs are generated for each of the EVs ($NO_2$ and $PM_{10}$) - In this graph, the predicted concentration value is displayed against the original concentration value, and the performance metrics RMSE and MAPE are plotted against the number of days remaining on the Horizon (the range of days in forecasting).
+\newpage
 
 ![Prediction plot of $NO_2$ and $PM_{10}$ variables of Manchester City](Forecasting_MCU_final.jpg){ width=95%, height=250 }
 
@@ -214,17 +216,21 @@ In order to train the FB-Prophet model, data from July $1^{st}$, 2019 to Novembe
 
 The data from the sensors gets recorded at the Newcastle Urban Observatory on a minute-by-minute basis. And these data may be downloaded for public use and research purposes using one of two methods: either by manual download or through an API. The data can be retrieved for a given theme and timeframe by using one of these methods. The Manchester Urban Observatory, on the other hand, records the data from the sensors every 15 minutes and allows users to retrieve the data only through a manual process. As a result, all other EV's are not recorded at each station in the city of Manchester, causing this study to be limited to solely $NO_2$ and $PM_{10}$ EV's. The Newcastle Urban Observatory has been equipped with 36 sensors that monitor the air quality at various locations throughout the city of Newcastle upon Tyne. The Manchester Urban Observatory, on the other hand, only has 12 stations that monitor the air quality in the city of Manchester.
 
-The study's primary focus is on comparing EV's between different cities with the use of Visual and Statistical Analysis techniques. The dashboards for both $NO_2$ and $PM_{10}$ EVs throughout the cities have been built based on the data in **Figure 1** and **Figure 2** at aggregated granularities of Hours, Days, and Weeks. Using the concentration values on an hourly basis, an hour granularity graph has been constructed, which has then been filtered out using the different weeks in the dataset. The hourly changes across several weeks could be watched in real time on this graph, which was interactive. In view of the fact that there are some hourly concentration spikes in both cities at certain times of the year, the visualization has been further enhanced by aggregating on a daily and weekly basis, and it has been created for the two EV's as shown in **Figure 1** and **Figure 2**.
+The concentration values of both $NO_2$ and $PM_{10}$ AQIs are aggregated based on three granularities - Hours, Days and Weeks. Due to some fluctuations in the Hourly aggregated data, the graph shows some spikes in both the cities at some of the weeks, where the hourly graph is further filtered upon weeks to visualize the hourly concentration level on each week. The graph aggregated towards Days and Weeks are considered upon comparing the highly polluted city.
 
-In order to study the analysis over aggregated concentration values across daily data, the boxplot visualizations (**Figure 3** and **Figure 4**) have been created. In order to generate the visualisation, the daily data has been considered across the Months of information between the two places. As seen in this boxplot representation (**Figure 3**), the NCL city shows some significant spikes in the $NO_2$ concentration over the course of several days, indicating that there are significant outliers in the dataset as compared to the MCU City. The variance between the cities has been quite different in some months, which has contributed to the spikes observed at the daily granularity. Similarly , in the $PM_{10}$ concentration (**Figure 4**), there are some spikes in the concentration value for the MCU city throughout the days where there are some outliers sitting around the data that act as a reason for the rise in the Daily granular level.
+Further investigation has been carried out on identifying the cause of the fluctuations over the daily data. The analysis is carried out by visualizing the distribution of the AQIs by days of each month and city. There occurs to be huge outliers and these outliers lie on different cities at different AQI's concentration levels. Thus results in the huge fluctuation over the days and this precisely impacts the average concentration level to increase on particular days.
 
-Specifically, the Geospatial visualisations (*Figure 5* and *Figure 6*) were created in order to determine whether or not there are any trends that could be discovered in terms of location, such as whether or not the heart of the city is more or less polluted when compared to other parts of the city. In spite of the fact that there was no evidence of such a trend, the dashboard was designed to be interactive, allowing users to see at which locations and during which time periods the concentration is bad or good, according to the Aircheckr Air Quality Index guidance.
+To analyse and identify whether or not there is a trend in fluctuation of the concentration levels based on the sensors/stations location, a Geospatial visualization is utilized by aggregating the AQI's concentration values to a weekly basis and the color hue segregation is created that ranges from Very poor to Very Good Air Quality to identify which location sensor is taking high readings. This information could be utilized to identify whether the sensor is malfunctioning or not based on the color hue representation. 
 
-When doing Hypothesis testing, the Welch T-Test was employed, which assisted in comparing the means between the represented variables, which was necessary because the data had unequal variance. The statistical analysis was completed as part of the Hypothesis testing process. The Welch T-Test was used since the total number of data differed between the two cities, resulting in unequal variance between the two cities. According to the findings of the statistical analysis, which are detailed in **Table 3**, there is a significant difference in the mean between the cities for both electric vehicles.
+Though the study can be concluded by comparing the Visual Analysis alone for identifying which city is performing good or bad, due to unequal total number of observations resulted in unequal variance. Hence, Hypothesis testing should be involved which could enable the study to statistically compare the concentration between the cities. Welch T-Test was employed which identifies the mean difference between the cities among the AQIs concentration.
 
-This study involves predicting the concentration of EV's across the cities. In this study, the predictive analysis was carried out using Time Series Analysis in conjunction with the FB-Prophet model. **Figure 7** and **Figure 8** depict the plots that are generated as a result of the model's prediction and are shown in detail. Despite the fact that the prediction was not precise, it is clear that a trend can be observed when forecasting using historical data. The Performance Metrics RMSE and MAPE are shown versus the number of days remaining on the horizon. The **Table 4** in the **Appendix** displays the performance metric values that were acquired across the horizon days based on the forecasting.
+Further extension of the study involves in predicting the concentration of EV's across the cities. In this study, the predictive analysis was carried out using Time Series Analysis in conjunction with the FB-Prophet model. It is clear that a trend can be observed when forecasting using historical data. The Performance Metrics RMSE and MAPE are shown versus the number of days remaining on the horizon. The **Figure 9** and **Figure 10** in the **Appendix** displays the performance metric values that were acquired across the horizon days based on the forecasting.
 
 Despite the fact that the study's primary focus is on comparing the Air Quality Index between two cities, there are some external factors that have an impact on the amount of EVs that are released into the environment. Some of the criteria that may be considered are traffic information, population density in the surrounding area, and weather information. These elements will have an impact on the emissions of EV's and the future scope of the study will include dealing with all of the aspects that will aid in the analysis of the Air Quality Index between cities or within cities in the future.
+
+# Future Implications
+
+The future implications of this work would be to better understand the effect that external factors have on air quality. The data for those variables that are available will be included, and further analysis will be conducted to formulate a comparison between the two cities. Additionally, the predictive analysis would require the use of Neural Network models, which have a lower error rate when forecasting Air Quality data.
 
 # Conclusion
 
@@ -433,18 +439,16 @@ A. Singh, “Air Pollution Forecasting and Performance Evaluation Using Advanced
 [67]
 “Manchester-I.” https://manchester-i.com/ (accessed Sep. 08, 2021).
 
+[68]
+“aircheckr.” http://aircheckr.com/ (accessed Sep. 08, 2021).
+
+\newpage
+
 # Appendix
 
-Table: Performance Metric Values of FB-Prophet model
+![Performance metrics values of Manchester City](MCU_Predictions.jpg){ width=95%, height=250 }
 
-| **Cities** | **EV's** | **Horizon days** | **RMSE**   | **MAPE**   |
-|------------|----------|------------------|------------|------------|
-|   MCU      |   NO2    |  10 days         |  4.346275  |  0.182395  |
-|            |   PM10   |  11 days         |  4.290572  |  0.172477  |      
-|------------|----------|------------------|------------|------------|
-|   NCL      |   NO2    |  5 days          |  10.038662 |  0.190591  |
-|            |   PM10   |  6 days          |  3.478587  |  0.187517  |          
-
+![Performance metrics values of Newcastle upon Tyne City](NCL_Predictions.jpg){ width=95%, height=250 }
 
 
 
