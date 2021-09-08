@@ -21,5 +21,3 @@ hist(a_no2_mcu)
 hist(a_no2_ncl)
 
 t.test(a_pm10_mcu, a_pm10_ncl)
-
-wilcox.test(a_no2_mcu, a_no2_ncl)
