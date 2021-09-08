@@ -446,16 +446,12 @@ A. Singh, “Air Pollution Forecasting and Performance Evaluation Using Advanced
 
 # Appendix
 
+The study's code, workflow and visualization dashboards are all available in the following Github link which is open for reference.
+
+https://github.com/SiddharthanSaravanan/CSC8639_Project_and_Dissertation
+
 ![Performance metrics values of Manchester City](MCU_Predictions.jpg){ width=95%, height=250 }
 
 ![Performance metrics values of Newcastle upon Tyne City](NCL_Predictions.jpg){ width=95%, height=250 }
-
-
-
-
-
-
-
-
 
 
